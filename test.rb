@@ -38,7 +38,7 @@ assignments = browser.table({id:'t1',:class =>"table"}).tr(:class => 'header').t
 
 # for each assignments fill the score according to their id number
 assignments.each_with_index do |assignment,assignment_num|
-  print "start to grade assignment #{assignment_num}... "
+  print "start to fill grade of assignment #{assignment_num+1}... "
   browser.goto(assignment)
   browser.table({id:'t1',:class =>"table"}).wait_until_present
   students = browser.table({id:'t1',:class =>"table"}).trs[1..-1]
