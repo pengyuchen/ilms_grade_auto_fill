@@ -1,9 +1,10 @@
 require 'io/console'
 require 'watir-webdriver'
 
-
-def get_score(index,id)
-  if index == 0 and id == '103062702'
+# change this part to get score from your file
+# if return -1, ignore that assignment
+def get_score(which_one_assignment, student_id)
+  if which_one_assignment == 0 and student_id == '103062702'
     return '99'
   else
     return '-1'
