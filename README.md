@@ -1,5 +1,5 @@
 # watir-automation
-use watir-webdriver to sautomatically do something
+use watir-webdriver to automatically do something
 
 ## how to install
 ```
