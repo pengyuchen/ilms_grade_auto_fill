@@ -1,15 +1,28 @@
 require 'io/console'
+require 'spreadsheet'
 require 'watir-webdriver'
 
-# change this part to get score from your file
-# if return -1, ignore that assignment
-def get_score(which_one_assignment, student_id)
-  if which_one_assignment == 0 and student_id == '103062702'
-    return '99'
-  else
-    return '-1'
+# if you don't have the same structure with 'demo.xls'
+# you need to customize this function to store all score to hash table 'result'
+# result = {'103062600':[99, 80, 79, 91, ......],'103062601'=>[90,83,...] ...}
+# notice that if score is -1, the script would ignore that assignment
+def read_score_from_file(file_name, result= Hash.new { |h, k| h[k] = [] })
+  sheet = Spreadsheet.open(file_name).worksheets[0]
+  num_of_assignment = sheet.rows[0].length - 2
+  sheet.rows[1..-1].each do |row|
+    student_id = row[0].to_s
+    row[2...2+num_of_assignment].each do |score|
+      if score.nil? then result[student_id] << -1
+      elsif score == 'OK' then result[student_id] << 80
+      else result[student_id] << score.to_i end
+    end
   end
+  result
 end
+
+# readfile
+total_score = read_score_from_file(ARGV[0])
+ARGV.clear
 
 # enter your account and password
 print 'loginAccount:'; account = gets.chomp
@@ -45,10 +58,10 @@ assignments.each_with_index do |assignment,assignment_num|
   students = browser.table({id:'t1',:class =>"table"}).trs[1..-1]
   students.each do |student|
     student_id  = student.tds[2].div.text
-    student_score =  get_score(assignment_num,student_id)
-    if student_score != '-1' then
+    student_score =  total_score[student_id][assignment_num]
+    if student_score != -1 then
       student.tds[-1].a.click
-      student.tds[-1].text_field.set(student_score)
+      student.tds[-1].text_field.set(student_score.to_s)
       browser.send_keys :enter
     end
   end
